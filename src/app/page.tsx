@@ -2,7 +2,15 @@
 import { useEffect, useRef } from "react";
 import JSMpeg from "@cycjimmy/jsmpeg-player";
 
-const JsmpegPlayer = ({ videoUrl, options, wrapperClassName }) => {
+interface JsmpegPlayerProps {
+  videoUrl: string;
+  options: {
+    autoplay: boolean;
+    loop: boolean;
+  };
+}
+
+const JsmpegPlayer = ({ videoUrl, options }: JsmpegPlayerProps) => {
   const videoWrapperRef = useRef(null);
 
   useEffect(() => {
@@ -12,18 +20,7 @@ const JsmpegPlayer = ({ videoUrl, options, wrapperClassName }) => {
       options,
     );
 
-    const handleUserInteraction = () => {
-      if (!player) {
-        initPlayer();
-        document.removeEventListener("click", handleUserInteraction);
-      }
-    };
-
-    document.addEventListener("click", handleUserInteraction);
-
     return () => {
-      document.removeEventListener("click", handleUserInteraction);
-
       player.destroy();
     };
   }, [videoUrl, options]);
@@ -38,11 +35,7 @@ export default function Home() {
   return (
     <div>
       My stream
-      <JsmpegPlayer
-        wrapperClassName="video-wrapper"
-        videoUrl={videoUrl}
-        options={options}
-      />
+      <JsmpegPlayer videoUrl={videoUrl} options={options} />
     </div>
   );
 }
